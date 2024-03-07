@@ -1,0 +1,12 @@
+package com.openclassrooms.rentals.repository;
+
+import com.openclassrooms.rentals.entity.Rental;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface RentalRepository extends JpaRepository<Rental, Integer> {
+}
