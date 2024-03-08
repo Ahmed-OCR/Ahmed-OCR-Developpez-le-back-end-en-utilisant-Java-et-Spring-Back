@@ -10,11 +10,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/api/auth")
+@RequestMapping(value = "/auth")
 public class AuthController {
 
 
 	private final JWTService jwtService;
+
 
 	private final UserServiceImpl userService;
 
@@ -31,7 +32,12 @@ public class AuthController {
 
 	@PostMapping("/register")
 	public ResponseEntity<String> register(@RequestBody UserRequest request) {
-		UserRequest user = new UserRequest(request.getEmail(), request.getName(), request.getPassword());
+		UserRequest user = UserRequest.builder()
+										.email(request.getEmail())
+										.name(request.getName())
+										.password(request.getPassword())
+										.build();
+
 		this.userService.createUser(user);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body("Utilisateur créé avec succès");

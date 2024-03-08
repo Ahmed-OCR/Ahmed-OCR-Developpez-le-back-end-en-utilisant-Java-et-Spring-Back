@@ -29,25 +29,25 @@ public class SpringSecurityConfig {
 		return http
 				.csrf(csrf -> csrf.disable())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeRequests(auth -> auth
-						.requestMatchers("/api/auth/register").permitAll() // Endpoint spécifique accessible sans authentification
-						.anyRequest().authenticated()) // Tous les autres endpoints nécessitent une authentification
+				.authorizeHttpRequests(auth -> {
+						auth.requestMatchers("/auth/register").permitAll(); // Endpoint spécifique accessible sans authentification
+						auth.anyRequest().authenticated(); // Tous les autres endpoints nécessitent une authentification
+				})
 				.httpBasic(Customizer.withDefaults())
 				.build();
+	}
+
+	@Bean
+	public UserDetailsService users() {
+		UserDetails user = User.builder().username("user").password(passwordEncoder().encode("password"))
+				.build();
+		return new InMemoryUserDetailsManager(user);
 	}
 
 	@Bean
 	public JwtEncoder jwtEncoder() {
 		return new NimbusJwtEncoder(new ImmutableSecret<>(this.jwtKey.getBytes()));
 	}
-
-	@Bean
-	public UserDetailsService users() {
-		UserDetails user = User.builder().username("user").password(passwordEncoder().encode("password")).roles("USER")
-				.build();
-		return new InMemoryUserDetailsManager(user);
-	}
-
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {

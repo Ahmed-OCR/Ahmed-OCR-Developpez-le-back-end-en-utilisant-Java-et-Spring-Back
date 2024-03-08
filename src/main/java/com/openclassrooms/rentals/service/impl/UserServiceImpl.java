@@ -6,12 +6,14 @@ import com.openclassrooms.rentals.exception.UserCreationException;
 import com.openclassrooms.rentals.repository.UserRepository;
 import com.openclassrooms.rentals.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
+	private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	@Autowired
 	public UserServiceImpl(UserRepository userRepository) {
@@ -22,7 +24,7 @@ public class UserServiceImpl implements UserService {
 		validateUserRequest(userRequest);
 
 		User user = new User();
-		user.setPassword(userRequest.getPassword());
+		user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 		user.setName(userRequest.getName());
 		user.setEmail(userRequest.getEmail());
 
