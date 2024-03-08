@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/api/rentals", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/rentals", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RentalController {
 
 	private final RentalService rentalService;
