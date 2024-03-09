@@ -24,11 +24,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 			throw new UsernameNotFoundException("User non trouvé: " + email);
 		}
 		UserEntity user = userOptional.get();
-		System.out.println("A = " + user.getEmail());
 		return User.builder()
 				.username(user.getEmail())
 				.password(user.getPassword())
-				.roles("USER")
 				.build();
 	}
 

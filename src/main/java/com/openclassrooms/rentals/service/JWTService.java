@@ -24,8 +24,6 @@ public class JWTService {
 
 	public String generateToken(UserDetails userDetails) {
 
-		System.out.println("JWT = " + userDetails.getUsername() + " " +userDetails.getPassword());
-
 		Instant now = Instant.now();
 		JwtClaimsSet claims = JwtClaimsSet.builder()
 				.issuer("self")
