@@ -1,6 +1,6 @@
 package com.openclassrooms.rentals.service;
 
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -16,19 +16,22 @@ import java.time.temporal.ChronoUnit;
 public class JWTService {
 
 
-	private JwtEncoder jwtEncoder;
+	private final JwtEncoder jwtEncoder;
 
 	public JWTService(JwtEncoder jwtEncoder) {
 		this.jwtEncoder = jwtEncoder;
 	}
 
-	public String generateToken(Authentication authentication) {
+	public String generateToken(UserDetails userDetails) {
+
+		System.out.println("JWT = " + userDetails.getUsername() + " " +userDetails.getPassword());
+
 		Instant now = Instant.now();
 		JwtClaimsSet claims = JwtClaimsSet.builder()
 				.issuer("self")
 				.issuedAt(now)
 				.expiresAt(now.plus(1, ChronoUnit.DAYS))
-				.subject(authentication.getName())
+				.subject(userDetails.getUsername())
 				.build();
 		JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims);
 		return this.jwtEncoder.encode(jwtEncoderParameters).getTokenValue();

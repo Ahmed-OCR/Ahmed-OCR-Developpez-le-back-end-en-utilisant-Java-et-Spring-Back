@@ -1,7 +1,7 @@
 package com.openclassrooms.rentals.service.impl;
 
 import com.openclassrooms.rentals.dto.request.UserRequest;
-import com.openclassrooms.rentals.entity.User;
+import com.openclassrooms.rentals.entity.UserEntity;
 import com.openclassrooms.rentals.exception.UserCreationException;
 import com.openclassrooms.rentals.repository.UserRepository;
 import com.openclassrooms.rentals.service.UserService;
@@ -20,10 +20,10 @@ public class UserServiceImpl implements UserService {
 		this.userRepository = userRepository;
 	}
 
-	public User createUser(UserRequest userRequest) {
+	public UserEntity createUser(UserRequest userRequest) {
 		validateUserRequest(userRequest);
 
-		User user = new User();
+		UserEntity user = new UserEntity();
 		user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 		user.setName(userRequest.getName());
 		user.setEmail(userRequest.getEmail());
