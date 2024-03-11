@@ -5,17 +5,19 @@ import com.openclassrooms.rentals.entity.UserEntity;
 import com.openclassrooms.rentals.exception.UserCreationException;
 import com.openclassrooms.rentals.repository.UserRepository;
 import com.openclassrooms.rentals.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+
 @Service
+//public class UserServiceImpl implements UserService, UserDetailsService {
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
-	private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-	@Autowired
 	public UserServiceImpl(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
@@ -35,13 +37,36 @@ public class UserServiceImpl implements UserService {
 		if (userRequest.getEmail() == null || userRequest.getEmail().isEmpty()) {
 			throw new UserCreationException("L'email ne peut pas être vide");
 		}
-
 		if (userRepository.findByEmail(userRequest.getEmail()).isPresent()) {
 			throw new UserCreationException("Un utilisateur existe déjà avec cet email ");
 		}
-
 		if (userRequest.getPassword() == null || userRequest.getPassword().isEmpty()) {
 			throw new UserCreationException("Le mot de passe ne peut pas être vide");
 		}
 	}
+
+
+//	@Override
+//	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+////		return this.userRepository
+////				.findByEmail(email)
+////				.orElseThrow(() -> new UsernameNotFoundException("Aucun utilisateur trouvé avec cet identifiant"));
+//
+//
+//		Optional<UserEntity> userOptional = this.userRepository.findByEmail(email)
+//				;
+//		if (userOptional.isEmpty()) {
+//			throw new UsernameNotFoundException("User non trouvé: " + email);
+//		}
+//		UserEntity user = userOptional.get();
+//
+//		return User.builder()
+//				.username(user.getEmail())
+//				.password(user.getPassword())
+//				.build();
+//
+//
+//
+//	}
+
 }

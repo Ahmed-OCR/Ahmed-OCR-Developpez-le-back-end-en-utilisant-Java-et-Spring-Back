@@ -1,10 +1,11 @@
 package com.openclassrooms.rentals.config;
 
 
-import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.openclassrooms.rentals.filter.JwtFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -12,19 +13,26 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import static org.springframework.http.HttpMethod.POST;
 
 
 @Configuration
 @EnableWebSecurity
+@PropertySource("classpath:security.properties")
 public class SpringSecurityConfig {
 
-	@Autowired
-	private CustomUserDetailsService customUserDetailsService;
+	@Value("${security.post.allowed.urls}")
+	private String postAllowedUrls;
+	private final CustomUserDetailsService customUserDetailsService;
+	private final JwtFilter jwtFilter;
 
-	private final String jwtKey = "cfefc055222c8f1d211510a294b3962c9610ccbc530d96cd208801dcaa02651a"; //test_jwt
+	public SpringSecurityConfig(CustomUserDetailsService customUserDetailsService, JwtFilter jwtFilter) {
+		this.customUserDetailsService = customUserDetailsService;
+		this.jwtFilter = jwtFilter;
+	}
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -32,17 +40,12 @@ public class SpringSecurityConfig {
 				.csrf(csrf -> csrf.disable())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests((auth) -> auth
-						.requestMatchers("/auth/register").permitAll() // Endpoint spécifique accessible sans authentification
-						.requestMatchers("/auth/login").permitAll() // Endpoint spécifique accessible sans authentification
+						.requestMatchers(POST,postAllowedUrls).permitAll() // Endpoint spécifique accessible sans authentification
 						.anyRequest().authenticated() // Tous les autres endpoints nécessitent une authentification
 				)
+				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 				.httpBasic(Customizer.withDefaults())
 				.build();
-	}
-
-	@Bean
-	public JwtEncoder jwtEncoder() {
-		return new NimbusJwtEncoder(new ImmutableSecret<>(this.jwtKey.getBytes()));
 	}
 
 	@Bean
@@ -56,6 +59,4 @@ public class SpringSecurityConfig {
 		authenticationManagerBuilder.userDetailsService(customUserDetailsService).passwordEncoder(bCryptPasswordEncoder);
 		return authenticationManagerBuilder.build();
 	}
-
-
 }
