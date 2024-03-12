@@ -1,6 +1,5 @@
 package com.openclassrooms.rentals.service;
 
-import com.openclassrooms.rentals.service.impl.UserServiceImpl;
 import com.openclassrooms.rentals.util.JwtTokenUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;

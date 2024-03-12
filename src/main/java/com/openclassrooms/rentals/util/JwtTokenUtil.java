@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.function.Function;
 
 @Component
 public class JwtTokenUtil {
@@ -27,8 +26,8 @@ public class JwtTokenUtil {
 		JwtClaimsSet claims = JwtClaimsSet.builder()
 				.issuer("self")
 				.issuedAt(now)
-				.expiresAt(now.plus(1, ChronoUnit.SECONDS))
-//				.expiresAt(now.plus(1, ChronoUnit.DAYS))
+//				.expiresAt(now.plus(1, ChronoUnit.SECONDS))
+				.expiresAt(now.plus(1, ChronoUnit.DAYS))
 				.subject(authentication.getName())
 				.build();
 		JwtEncoderParameters jwtEncoderParameters = JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims);
