@@ -4,6 +4,7 @@ import com.openclassrooms.rentals.dto.request.UserRequest;
 import com.openclassrooms.rentals.exception.UserCreationException;
 import com.openclassrooms.rentals.service.JwtService;
 import com.openclassrooms.rentals.service.impl.UserServiceImpl;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -11,6 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Tag(name = "Authentification")
 @RequestMapping(value = "/auth")
 public class AuthController {
 

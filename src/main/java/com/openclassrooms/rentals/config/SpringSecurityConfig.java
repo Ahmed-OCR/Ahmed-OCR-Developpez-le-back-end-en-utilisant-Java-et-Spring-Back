@@ -42,7 +42,6 @@ public class SpringSecurityConfig {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests((auth) -> auth
 						.requestMatchers(POST,postAllowedUrls).permitAll() // Endpoint spécifique accessible sans authentification
-//						.requestMatchers(GET,getAllowedUrls).permitAll() // Endpoint spécifique accessible sans authentification
 						.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui/index.html").permitAll()
 						.anyRequest().authenticated() // Tous les autres endpoints nécessitent une authentification
 				)
