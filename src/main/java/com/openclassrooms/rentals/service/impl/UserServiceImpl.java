@@ -8,11 +8,8 @@ import com.openclassrooms.rentals.service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 
 @Service
-//public class UserServiceImpl implements UserService, UserDetailsService {
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
@@ -44,29 +41,4 @@ public class UserServiceImpl implements UserService {
 			throw new UserCreationException("Le mot de passe ne peut pas être vide");
 		}
 	}
-
-
-//	@Override
-//	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-////		return this.userRepository
-////				.findByEmail(email)
-////				.orElseThrow(() -> new UsernameNotFoundException("Aucun utilisateur trouvé avec cet identifiant"));
-//
-//
-//		Optional<UserEntity> userOptional = this.userRepository.findByEmail(email)
-//				;
-//		if (userOptional.isEmpty()) {
-//			throw new UsernameNotFoundException("User non trouvé: " + email);
-//		}
-//		UserEntity user = userOptional.get();
-//
-//		return User.builder()
-//				.username(user.getEmail())
-//				.password(user.getPassword())
-//				.build();
-//
-//
-//
-//	}
-
 }

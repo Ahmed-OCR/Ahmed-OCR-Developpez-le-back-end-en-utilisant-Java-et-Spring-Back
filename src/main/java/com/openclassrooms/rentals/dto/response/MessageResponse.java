@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TokenResponse {
-	String token;
+public class MessageResponse {
+	String message;
 }
-

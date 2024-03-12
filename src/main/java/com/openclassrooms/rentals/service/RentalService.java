@@ -1,31 +1,18 @@
 package com.openclassrooms.rentals.service;
 
+import com.openclassrooms.rentals.dto.request.RentalRequest;
 import com.openclassrooms.rentals.dto.response.RentalResponse;
-import com.openclassrooms.rentals.entity.Rental;
-import com.openclassrooms.rentals.repository.RentalRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.openclassrooms.rentals.entity.RentalEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
-public class RentalService {
-	private final RentalRepository rentalRepository;
+public interface RentalService {
 
-	@Autowired
-	public RentalService(RentalRepository rentalRepository) {
-		this.rentalRepository = rentalRepository;
-	}
+	RentalResponse findAllRentals();
 
-	public RentalResponse findAllRentals() {
-		List<Rental> rentals = this.rentalRepository.findAll();
-		return new RentalResponse(rentals);
-	}
+	Optional<RentalEntity> findById(int id);
 
-	public Optional<Rental> findById(int id) {
-		Optional<Rental> rental = this.rentalRepository.findById(id);
-		return rental;
-//		System.out.println(rental.get().);
-	}
+	void createRental(RentalRequest request);
 }
