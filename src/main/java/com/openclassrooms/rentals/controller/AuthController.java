@@ -1,6 +1,7 @@
 package com.openclassrooms.rentals.controller;
 
 import com.openclassrooms.rentals.dto.request.UserRequest;
+import com.openclassrooms.rentals.dto.response.TokenResponse;
 import com.openclassrooms.rentals.exception.UserCreationException;
 import com.openclassrooms.rentals.service.JwtService;
 import com.openclassrooms.rentals.service.impl.UserServiceImpl;
@@ -26,13 +27,15 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<String> getToken(Authentication authentication) {
+	public ResponseEntity<TokenResponse> getToken(Authentication authentication) {
 		try {
-			String token = jwtService.generateToken(authentication);
+			TokenResponse token =
+					TokenResponse.builder()
+									.token(jwtService.generateToken(authentication))
+					             	.build();
 			return ResponseEntity.ok(token);
 		} catch (AuthenticationException e) {
-			System.out.println("L'authentification a echouée");
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("L'authentification a echouée");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 	}
 

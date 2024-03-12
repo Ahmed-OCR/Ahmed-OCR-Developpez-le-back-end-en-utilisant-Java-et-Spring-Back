@@ -32,7 +32,6 @@ public class RentalController {
 
 	@GetMapping("/{id}")
 	public Optional<Rental> findAllRentals(@PathVariable int id) {
-//		System.out.println("L'ID de l'utilisateur est : " + id);
 		return this.rentalService.findById(id);
 	}
 }
