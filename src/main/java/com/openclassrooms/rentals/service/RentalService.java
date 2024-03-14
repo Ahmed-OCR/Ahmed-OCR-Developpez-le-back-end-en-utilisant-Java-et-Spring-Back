@@ -16,7 +16,7 @@ public interface RentalService {
 
 	Optional<RentalEntity> findById(int id);
 
-	void createRental(RentalRequest request);
+	ResponseEntity<MessageResponse> createRental(RentalRequest request);
 
 	ResponseEntity<MessageResponse> updateRental(RentalRequest request, int id);
 }

@@ -38,9 +38,20 @@ public class RentalServiceImpl implements RentalService {
 	}
 
 	@Override
-	public void createRental(RentalRequest request) {
+	public ResponseEntity<MessageResponse> createRental(RentalRequest request) {
 		RentalEntity rental = RentalMapper.mapToRental(request);
-		this.rentalRepository.save(rental);
+		try {
+			this.rentalRepository.save(rental);
+			MessageResponse message = MessageResponse.builder()
+					.message("Rental created !")
+					.build();
+			return ResponseEntity.status(HttpStatus.CREATED).body(message);
+		} catch (Exception e) {
+			MessageResponse errorResponse = MessageResponse.builder()
+					.message("An error occurred while creating the rental.")
+					.build();
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+		}
 	}
 
 	@Override
