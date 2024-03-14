@@ -1,12 +1,16 @@
 package com.openclassrooms.rentals.service.impl;
 
 import com.openclassrooms.rentals.dto.request.UserRequest;
+import com.openclassrooms.rentals.dto.response.UserResponse;
 import com.openclassrooms.rentals.entity.UserEntity;
 import com.openclassrooms.rentals.exception.UserCreationException;
+import com.openclassrooms.rentals.mapper.UserMapper;
 import com.openclassrooms.rentals.repository.UserRepository;
 import com.openclassrooms.rentals.service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -39,6 +43,19 @@ public class UserServiceImpl implements UserService {
 		}
 		if (userRequest.getPassword() == null || userRequest.getPassword().isEmpty()) {
 			throw new UserCreationException("Le mot de passe ne peut pas être vide");
+		}
+	}
+
+
+	@Override
+	public UserResponse findById(int id) {
+//		return UserMapper.UserEntitytoUserResponse(this.userRepository.findById(id));
+		Optional<UserEntity> userOptional = this.userRepository.findById(id);
+		if (userOptional.isPresent()) {
+			return UserMapper.UserEntitytoUserResponse(userOptional.get());
+		} else {
+			return new UserResponse();
+//			throw new UserNotFoundException("Utilisateur introuvable avec l'ID : " + id);
 		}
 	}
 }

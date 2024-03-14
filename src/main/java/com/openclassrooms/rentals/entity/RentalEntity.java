@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.Set;
 
 @Entity
-@Table(name="rental")
 @Data
+@Table(name="RENTALS")
 public class RentalEntity {
 
 	@Id
@@ -15,19 +16,21 @@ public class RentalEntity {
 	private int id;
 
 	private String name;
-
 	private int surface;
-
 	private int price;
-
 	private String picture;
 
 	@Column(length = 2000)
 	private String description;
 
-	private int owner_id; // owner_id NOT NULL
+	@ManyToOne
+	@JoinColumn(name = "owner_id")
+	private UserEntity owner;
 
-	@Column(name = "created_at", updatable = false)
+	@OneToMany(mappedBy = "rental")
+	private Set<MessageEntity> messages;
+
+	@Column(name = "created_at")
 	private Timestamp createdAt;
 
 	@Column(name = "updated_at")
@@ -42,5 +45,4 @@ public class RentalEntity {
 	protected void onUpdate() {
 		updatedAt = new Timestamp(System.currentTimeMillis());
 	}
-
 }

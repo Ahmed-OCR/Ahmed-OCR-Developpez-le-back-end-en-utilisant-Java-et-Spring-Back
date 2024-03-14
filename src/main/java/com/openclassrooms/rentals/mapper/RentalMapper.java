@@ -1,8 +1,12 @@
 package com.openclassrooms.rentals.mapper;
 
 import com.openclassrooms.rentals.dto.request.RentalRequest;
+import com.openclassrooms.rentals.dto.response.RentalResponse;
 import com.openclassrooms.rentals.entity.RentalEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class RentalMapper {
@@ -25,5 +29,13 @@ public class RentalMapper {
 		request.setPicture(rental.getPicture());
 		request.setDescription(rental.getDescription());
 		return request;
+	}
+
+	public static List<RentalEntity> toRentalEntity(RentalResponse rentalResponse) {
+		List<RentalEntity> rentalEntities = new ArrayList<>();
+		if (rentalResponse != null && rentalResponse.getRentals() != null) {
+			rentalEntities.addAll(rentalResponse.getRentals());
+		}
+		return rentalEntities;
 	}
 }

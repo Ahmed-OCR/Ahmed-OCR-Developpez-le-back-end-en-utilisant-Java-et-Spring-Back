@@ -4,28 +4,26 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
-import java.util.Set;
 
 @Entity
 @Data
-@Table(name="USERS")
-public class UserEntity {
+@Table(name = "MESSAGES")
+public class MessageEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@Column(unique = true)
-	private String email;
+	@ManyToOne
+	@JoinColumn(name = "rental_id")
+	private RentalEntity rental;
 
-	private String name;
-	private String password;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private UserEntity user;
 
-	@OneToMany(mappedBy = "user")
-	private Set<MessageEntity> messages;
-
-	@OneToMany(mappedBy = "owner")
-	private Set<RentalEntity> rentals;
+	@Column(length = 2000)
+	private String message;
 
 	@Column(name = "created_at")
 	private Timestamp createdAt;
@@ -33,7 +31,6 @@ public class UserEntity {
 	@Column(name = "updated_at")
 	private Timestamp updatedAt;
 
-	// Getters and setters
 	@PrePersist
 	protected void onCreate() {
 		createdAt = new Timestamp(System.currentTimeMillis());
@@ -43,6 +40,5 @@ public class UserEntity {
 	protected void onUpdate() {
 		updatedAt = new Timestamp(System.currentTimeMillis());
 	}
+
 }
-
-

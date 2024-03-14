@@ -3,6 +3,7 @@ package com.openclassrooms.rentals.service.impl;
 import com.openclassrooms.rentals.dto.request.RentalRequest;
 import com.openclassrooms.rentals.dto.response.RentalResponse;
 import com.openclassrooms.rentals.entity.RentalEntity;
+import com.openclassrooms.rentals.exception.RentalNotFoundException;
 import com.openclassrooms.rentals.mapper.RentalMapper;
 import com.openclassrooms.rentals.repository.RentalRepository;
 import com.openclassrooms.rentals.service.RentalService;
@@ -27,6 +28,9 @@ public class RentalServiceImpl implements RentalService {
 	@Override
 	public Optional<RentalEntity> findById(int id) {
 		Optional<RentalEntity> rental = this.rentalRepository.findById(id);
+		if (rental.isEmpty()) {
+			throw new RentalNotFoundException("Location introuvable avec l'ID : " + id);
+		}
 		return rental;
 	}
 
