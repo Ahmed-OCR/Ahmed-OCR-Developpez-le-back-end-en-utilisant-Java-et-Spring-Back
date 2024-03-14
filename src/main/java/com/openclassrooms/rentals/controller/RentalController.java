@@ -51,4 +51,10 @@ public class RentalController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
 		}
 	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<MessageResponse> updateRental(@RequestBody RentalRequest request, @PathVariable int id) {
+			return this.rentalService.updateRental(request, id);
+
+	}
 }
