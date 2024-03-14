@@ -8,6 +8,7 @@ import com.openclassrooms.rentals.exception.RentalNotFoundException;
 import com.openclassrooms.rentals.mapper.RentalMapper;
 import com.openclassrooms.rentals.repository.RentalRepository;
 import com.openclassrooms.rentals.service.RentalService;
+import com.openclassrooms.rentals.util.MessageUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,15 +43,9 @@ public class RentalServiceImpl implements RentalService {
 		RentalEntity rental = RentalMapper.mapToRental(request);
 		try {
 			this.rentalRepository.save(rental);
-			MessageResponse message = MessageResponse.builder()
-					.message("Rental created !")
-					.build();
-			return ResponseEntity.status(HttpStatus.CREATED).body(message);
+			return ResponseEntity.status(HttpStatus.CREATED).body(MessageUtil.returnMessage("Rental created !"));
 		} catch (Exception e) {
-			MessageResponse errorResponse = MessageResponse.builder()
-					.message("An error occurred while creating the rental.")
-					.build();
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(MessageUtil.returnMessage("An error occurred while creating the rental."));
 		}
 	}
 
@@ -64,15 +59,9 @@ public class RentalServiceImpl implements RentalService {
 			existingRental.setPrice(request.getPrice());
 			existingRental.setDescription(request.getDescription());
 			this.rentalRepository.save(existingRental);
-			MessageResponse message = MessageResponse.builder()
-					.message("Rental updated !")
-					.build();
-			return ResponseEntity.status(HttpStatus.CREATED).body(message);
+			return ResponseEntity.status(HttpStatus.CREATED).body(MessageUtil.returnMessage("Rental updated !"));
 		} else {
-			MessageResponse errorResponse = MessageResponse.builder()
-					.message("An error occurred while updating the rental.")
-					.build();
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(MessageUtil.returnMessage("An error occurred while updating the rental."));
 		}
 	}
 }
