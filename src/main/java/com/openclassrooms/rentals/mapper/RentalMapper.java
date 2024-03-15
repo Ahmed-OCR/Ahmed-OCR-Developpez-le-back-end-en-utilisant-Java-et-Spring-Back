@@ -16,7 +16,7 @@ public class RentalMapper {
 		rental.setName(rentalRequest.getName());
 		rental.setSurface(rentalRequest.getSurface());
 		rental.setPrice(rentalRequest.getPrice());
-		rental.setPicture(rentalRequest.getPicture());
+//		rental.setPicture(rentalRequest.getPicture());
 		rental.setDescription(rentalRequest.getDescription());
 		return rental;
 	}
@@ -26,7 +26,7 @@ public class RentalMapper {
 		request.setName(rental.getName());
 		request.setSurface(rental.getSurface());
 		request.setPrice(rental.getPrice());
-		request.setPicture(rental.getPicture());
+//		request.setPicture(rental.getPicture());
 		request.setDescription(rental.getDescription());
 		return request;
 	}

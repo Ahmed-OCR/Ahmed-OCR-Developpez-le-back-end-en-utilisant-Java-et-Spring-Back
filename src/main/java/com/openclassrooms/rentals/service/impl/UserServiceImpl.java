@@ -3,7 +3,6 @@ package com.openclassrooms.rentals.service.impl;
 import com.openclassrooms.rentals.dto.request.UserRequest;
 import com.openclassrooms.rentals.dto.response.UserResponse;
 import com.openclassrooms.rentals.entity.UserEntity;
-import com.openclassrooms.rentals.exception.UserCreationException;
 import com.openclassrooms.rentals.mapper.UserMapper;
 import com.openclassrooms.rentals.repository.UserRepository;
 import com.openclassrooms.rentals.service.UserService;
@@ -17,34 +16,35 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
-	private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	private final BCryptPasswordEncoder passwordEncoder;
 
-	public UserServiceImpl(UserRepository userRepository) {
+	public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 
-	public UserEntity createUser(UserRequest userRequest) {
-		validateUserRequest(userRequest);
+	public Object createUser(UserRequest userRequest) {
+//		validateUserRequest(userRequest);
 
 		UserEntity user = new UserEntity();
 		user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 		user.setName(userRequest.getName());
 		user.setEmail(userRequest.getEmail());
 
-		return userRepository.save(user);
+		return this.userRepository.save(user);
 	}
 
-	private void validateUserRequest(UserRequest userRequest) {
-		if (userRequest.getEmail() == null || userRequest.getEmail().isEmpty()) {
-			throw new UserCreationException("L'email ne peut pas être vide");
-		}
-		if (userRepository.findByEmail(userRequest.getEmail()).isPresent()) {
-			throw new UserCreationException("Un utilisateur existe déjà avec cet email ");
-		}
-		if (userRequest.getPassword() == null || userRequest.getPassword().isEmpty()) {
-			throw new UserCreationException("Le mot de passe ne peut pas être vide");
-		}
-	}
+//	private void validateUserRequest(UserRequest userRequest) {
+//		if (userRequest.getEmail() == null || userRequest.getEmail().isEmpty()) {
+//			throw new UserCreationException("L'email ne peut pas être vide");
+//		}
+//		if (userRepository.findByEmail(userRequest.getEmail()).isPresent()) {
+//			throw new UserCreationException("Un utilisateur existe déjà avec cet email ");
+//		}
+//		if (userRequest.getPassword() == null || userRequest.getPassword().isEmpty()) {
+//			throw new UserCreationException("Le mot de passe ne peut pas être vide");
+//		}
+//	}
 
 
 	@Override

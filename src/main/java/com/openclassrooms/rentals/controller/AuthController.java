@@ -1,55 +1,80 @@
 package com.openclassrooms.rentals.controller;
 
+import com.openclassrooms.rentals.dto.request.AuthentificationDTO;
 import com.openclassrooms.rentals.dto.request.UserRequest;
 import com.openclassrooms.rentals.dto.response.LoginResponse;
+import com.openclassrooms.rentals.dto.response.MessageResponse;
 import com.openclassrooms.rentals.exception.UserCreationException;
 import com.openclassrooms.rentals.service.JwtService;
 import com.openclassrooms.rentals.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+
 @RestController
+@AllArgsConstructor
 @Tag(name = "Authentification")
 @RequestMapping(value = "/auth")
 public class AuthController {
-
-
+	private AuthenticationManager authenticationManager;
 	private final JwtService jwtService;
 	private final UserServiceImpl userService;
 
-	public AuthController(JwtService jwtService, UserServiceImpl userService) {
-		this.jwtService = jwtService;
-		this.userService = userService;
-	}
+//	@PostMapping("/login")
+//	public ResponseEntity<LoginResponse> getToken(@RequestBody UserRequest request, AuthenticationManager authenticationManager) {
+//		//401 si non authentification
+//		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+//
+//		try {
+//			LoginResponse token =
+//					LoginResponse.builder()
+//									.token(jwtService.generateToken(authentication))
+//					             	.build();
+//			return ResponseEntity.ok(token);
+//		} catch (AuthenticationException e) {
+//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//		}
+//	}
 
 	@PostMapping("/login")
-	public ResponseEntity<LoginResponse> getToken(Authentication authentication) {
+	public ResponseEntity<?> getToken(@RequestBody AuthentificationDTO authentificationDTO) {
 		try {
+			Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authentificationDTO.login(), authentificationDTO.password()));
 			LoginResponse token =
 					LoginResponse.builder()
-									.token(jwtService.generateToken(authentication))
-					             	.build();
+							.token(jwtService.generateToken(authentication))
+							.build();
 			return ResponseEntity.ok(token);
 		} catch (AuthenticationException e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			MessageResponse message =
+					MessageResponse.builder()
+							.message("error")
+							.build();
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 		}
 	}
 
 	@PostMapping("/register")
-	public ResponseEntity<String> register(@RequestBody UserRequest request) {
-		UserRequest user = UserRequest.builder()
-										.email(request.getEmail())
-										.name(request.getName())
-										.password(request.getPassword())
-										.build();
+	public ResponseEntity<?> register(@RequestBody UserRequest request) {
+		try {
+			this.userService.createUser(request);
+			LoginResponse token =
+					LoginResponse.builder()
+							.token(jwtService.generateToken(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())))
+							.build();
+			return ResponseEntity.ok(token);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Collections.emptyMap());
+		}
 
-		this.userService.createUser(user);
-
-		return ResponseEntity.status(HttpStatus.CREATED).body("Utilisateur créé avec succès");
 	}
 
 	@ExceptionHandler(UserCreationException.class)

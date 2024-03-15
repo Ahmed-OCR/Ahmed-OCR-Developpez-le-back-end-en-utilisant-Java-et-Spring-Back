@@ -7,16 +7,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import static org.springframework.http.HttpMethod.POST;
 
 
 @Configuration
@@ -38,15 +36,14 @@ public class SpringSecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http
-				.csrf(csrf -> csrf.disable())
+				.csrf(AbstractHttpConfigurer::disable)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests((auth) -> auth
-						.requestMatchers(POST,postAllowedUrls).permitAll() // Endpoint spécifique accessible sans authentification
+						.requestMatchers(postAllowedUrls, "/auth/login").permitAll() // Endpoint spécifique accessible sans authentification
 						.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui/index.html").permitAll()
 						.anyRequest().authenticated() // Tous les autres endpoints nécessitent une authentification
 				)
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-				.httpBasic(Customizer.withDefaults())
 				.build();
 	}
 
@@ -61,4 +58,5 @@ public class SpringSecurityConfig {
 		authenticationManagerBuilder.userDetailsService(customUserDetailsService).passwordEncoder(bCryptPasswordEncoder);
 		return authenticationManagerBuilder.build();
 	}
+
 }

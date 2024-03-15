@@ -35,8 +35,9 @@ public class RentalController {
 		return this.rentalService.findById(id);
 	}
 
-	@PostMapping
-	public ResponseEntity<MessageResponse> createRental(@RequestBody RentalRequest request) {
+	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//	public ResponseEntity<MessageResponse> createRental(@RequestBody RentalRequest request) {
+	public ResponseEntity<MessageResponse> createRental(@ModelAttribute RentalRequest request) {
 		return this.rentalService.createRental(request);
 	}
 
