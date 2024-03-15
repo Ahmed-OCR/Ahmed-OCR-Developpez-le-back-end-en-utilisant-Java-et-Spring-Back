@@ -14,13 +14,11 @@ public class MessageEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@ManyToOne
-	@JoinColumn(name = "rental_id")
-	private RentalEntity rental;
+	@Column(name = "rental_id")
+	private int rental_id;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private UserEntity user;
+	@Column(name = "user_id")
+	private int user_id;
 
 	@Column(length = 2000)
 	private String message;

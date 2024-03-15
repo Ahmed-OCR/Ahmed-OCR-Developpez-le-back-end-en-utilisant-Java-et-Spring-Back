@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
-import java.util.Set;
 
 @Entity
 @Data
@@ -21,11 +20,11 @@ public class UserEntity {
 	private String name;
 	private String password;
 
-	@OneToMany(mappedBy = "user")
-	private Set<MessageEntity> messages;
-
-	@OneToMany(mappedBy = "owner")
-	private Set<RentalEntity> rentals;
+//	@OneToMany(mappedBy = "user")
+//	private Set<MessageEntity> messages;
+//
+//	@OneToMany(mappedBy = "owner")
+//	private Set<RentalEntity> rentals;
 
 	@Column(name = "created_at")
 	private Timestamp createdAt;

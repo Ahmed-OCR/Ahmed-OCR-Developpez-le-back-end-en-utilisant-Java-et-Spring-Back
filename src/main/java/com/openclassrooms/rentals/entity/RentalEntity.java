@@ -22,23 +22,27 @@ public class RentalEntity {
 	@Column(length = 2000)
 	private String description;
 
-	@ManyToOne
-	@JoinColumn(name = "owner_id")
-	private UserEntity owner;
+//	@ManyToOne
+//	@JoinColumn(name = "owner_id")
+//	private UserEntity owner;
+
+	@Column(name = "owner_id")
+	private int owner_id; // On stocke directement l'ID du propriétaire
+
 
 	@Column(name = "created_at")
-	private Timestamp createdAt;
+	private Timestamp created_at;
 
 	@Column(name = "updated_at")
-	private Timestamp updatedAt;
+	private Timestamp updated_at;
 
 	@PrePersist
 	protected void onCreate() {
-		createdAt = new Timestamp(System.currentTimeMillis());
+		created_at = new Timestamp(System.currentTimeMillis());
 	}
 
 	@PreUpdate
 	protected void onUpdate() {
-		updatedAt = new Timestamp(System.currentTimeMillis());
+		updated_at = new Timestamp(System.currentTimeMillis());
 	}
 }
