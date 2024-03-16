@@ -15,10 +15,18 @@ public class MessageEntity {
 	private int id;
 
 	@Column(name = "rental_id")
-	private int rental_id;
+	private int rentalId;
 
 	@Column(name = "user_id")
-	private int user_id;
+	private int userId;
+
+	@ManyToOne
+	@JoinColumn(name = "rental_id", insertable = false, updatable = false)
+	private RentalEntity rental;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id", insertable = false, updatable = false)
+	private UserEntity user;
 
 	@Column(length = 2000)
 	private String message;
