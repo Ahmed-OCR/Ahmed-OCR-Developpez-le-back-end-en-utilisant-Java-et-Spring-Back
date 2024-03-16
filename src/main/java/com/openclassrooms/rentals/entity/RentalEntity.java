@@ -1,5 +1,7 @@
 package com.openclassrooms.rentals.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,7 +19,10 @@ public class RentalEntity {
 	private String name;
 	private int surface;
 	private int price;
-	private String picture;
+//	private String picture;
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	private byte[] picture;
 
 	@Column(length = 2000)
 	private String description;
@@ -26,13 +31,16 @@ public class RentalEntity {
 	private int owner_id;
 
 	@ManyToOne
+	@JsonIgnore
 	@JoinColumn(name = "owner_id", insertable = false, updatable = false)
 	private UserEntity owner;
 
 	@Column(name = "created_at")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd", timezone = "Europe/Paris")
 	private Timestamp created_at;
 
 	@Column(name = "updated_at")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd", timezone = "Europe/Paris")
 	private Timestamp updated_at;
 
 	@PrePersist

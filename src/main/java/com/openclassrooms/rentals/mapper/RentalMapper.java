@@ -18,6 +18,7 @@ public class RentalMapper {
 		rental.setPrice(rentalRequest.getPrice());
 //		rental.setPicture(rentalRequest.getPicture());
 		rental.setDescription(rentalRequest.getDescription());
+		rental.setOwner_id(rental.getOwner_id());
 		return rental;
 	}
 
