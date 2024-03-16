@@ -22,13 +22,12 @@ public class RentalEntity {
 	@Column(length = 2000)
 	private String description;
 
-//	@ManyToOne
-//	@JoinColumn(name = "owner_id")
-//	private UserEntity owner;
-
 	@Column(name = "owner_id")
-	private int owner_id; // On stocke directement l'ID du propriétaire
+	private int owner_id;
 
+	@ManyToOne
+	@JoinColumn(name = "owner_id", insertable = false, updatable = false)
+	private UserEntity owner;
 
 	@Column(name = "created_at")
 	private Timestamp created_at;
