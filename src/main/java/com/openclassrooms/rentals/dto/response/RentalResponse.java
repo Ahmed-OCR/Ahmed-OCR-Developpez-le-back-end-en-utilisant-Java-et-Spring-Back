@@ -1,15 +1,22 @@
 package com.openclassrooms.rentals.dto.response;
 
-import com.openclassrooms.rentals.entity.RentalEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class RentalResponse {
-	List<RentalEntity> rentals;
-
+	int id;
+	String name;
+	int surface;
+	int price;
+	String picture;
+	String description;
+	int owner_id;
+	Date created_at;
+	Date updated_at;
 }

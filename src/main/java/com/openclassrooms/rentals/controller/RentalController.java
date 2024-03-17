@@ -2,7 +2,7 @@ package com.openclassrooms.rentals.controller;
 
 import com.openclassrooms.rentals.dto.request.RentalRequest;
 import com.openclassrooms.rentals.dto.response.MessageResponse;
-import com.openclassrooms.rentals.dto.response.RentalResponse;
+import com.openclassrooms.rentals.dto.response.RentalsResponse;
 import com.openclassrooms.rentals.entity.RentalEntity;
 import com.openclassrooms.rentals.service.RentalService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -26,8 +27,13 @@ public class RentalController {
 	}
 
 	@GetMapping
-	public RentalResponse findAllRentals() {
+	public RentalsResponse findAllRentals() {
 		return this.rentalService.findAllRentals();
+	}
+
+	@PostMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<MessageResponse> createRental(@PathVariable int id, @RequestParam("picture") MultipartFile picture,@ModelAttribute RentalRequest request) {
+		return this.rentalService.createRental(id, picture, request);
 	}
 
 	@GetMapping("/{id}")
@@ -35,11 +41,6 @@ public class RentalController {
 		return this.rentalService.findById(id);
 	}
 
-	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//	public ResponseEntity<MessageResponse> createRental(@RequestBody RentalRequest request) {
-	public ResponseEntity<MessageResponse> createRental(@ModelAttribute RentalRequest request) {
-		return this.rentalService.createRental(request);
-	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<MessageResponse> updateRental(@RequestBody RentalRequest request, @PathVariable int id) {

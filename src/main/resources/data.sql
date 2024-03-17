@@ -5,4 +5,4 @@ INSERT INTO rentals (id, name, surface, price, picture, description, owner_id, c
 
 
 INSERT INTO users (id, name, email, created_at, updated_at) VALUES
-    (2, 'Owner Name', 'test@test.com', '2022/02/02', '2022/08/02');
+    (1, 'Owner Name', 'test@test.com', '2022/02/02', '2022/08/02');
