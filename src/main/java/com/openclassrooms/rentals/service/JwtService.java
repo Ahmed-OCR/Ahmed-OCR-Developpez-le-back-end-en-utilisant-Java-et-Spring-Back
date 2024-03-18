@@ -21,11 +21,5 @@ public class JwtService {
 		return this.jwtTokenUtil.isTokenValid(token);
 	}
 
-//	public boolean isTokenExpired(String token) {
-//		return this.jwtTokenUtil.validateToken(token);
-//	}
-//
-//	public String extractUsername(String token) {
-//		return this.jwtTokenUtil.getUsernameFromToken(token);
-//	}
+	public String getUsernameFromToken(String token) { return this.jwtTokenUtil.getUsernameFromToken(token); }
 }

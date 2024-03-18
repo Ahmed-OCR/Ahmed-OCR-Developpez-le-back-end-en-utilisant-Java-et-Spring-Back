@@ -58,5 +58,4 @@ public class SpringSecurityConfig {
 		authenticationManagerBuilder.userDetailsService(customUserDetailsService).passwordEncoder(bCryptPasswordEncoder);
 		return authenticationManagerBuilder.build();
 	}
-
 }

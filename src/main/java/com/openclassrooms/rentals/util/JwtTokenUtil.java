@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.function.Function;
 
 @Component
 public class JwtTokenUtil {
@@ -56,30 +57,33 @@ public class JwtTokenUtil {
 //		return isTokenExpired(token);
 //	}
 
-//	public String getUsernameFromToken(String token) {
-//		return getClaimFromToken(token, Claims::getSubject);
-//	}
-
-//	public Date getExpirationDateFromToken(String token) {
-//		return getClaimFromToken(token, Claims::getExpiration);
-//	}
-
 	private JwtEncoder jwtEncoder() {
 		return new NimbusJwtEncoder(new ImmutableSecret<>(this.jwtKey.getBytes()));
 	}
 
-//	private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-//		final Claims claims = getAllClaimsFromToken(token);
-//		return claimsResolver.apply(claims);
-//	}
+	public String getUsernameFromToken(String token) {
+		return getClaimFromToken(token, Claims::getSubject);
+	}
 
-//	private Claims getAllClaimsFromToken(String token) {
-//		return Jwts.parser().setSigningKey(jwtKey).parseClaimsJws(token).getBody();
-//	}
-//
+	private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+		final Claims claims = getAllClaimsFromToken(token);
+		return claimsResolver.apply(claims);
+	}
+
+	private Claims getAllClaimsFromToken(String token) {
+		return Jwts.parserBuilder()
+				.setSigningKey(Keys.hmacShaKeyFor(jwtKey.getBytes()))
+				.build()
+				.parseClaimsJws(token)
+				.getBody();
+	}
+
 //	private boolean isTokenExpired(String token) {
 //		final Date expiration = getExpirationDateFromToken(token);
 //		return expiration.before(new Date());
 //	}
-
+//
+// 	public Date getExpirationDateFromToken(String token) {
+//		return getClaimFromToken(token, Claims::getExpiration);
+//	}
 }

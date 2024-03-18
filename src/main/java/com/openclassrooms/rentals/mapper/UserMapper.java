@@ -15,6 +15,4 @@ public class UserMapper {
 		userResponse.setUpdated_at(DateUtil.parseTimestamp(userEntity.getUpdatedAt()));
 		return userResponse;
 	}
-
-
 }

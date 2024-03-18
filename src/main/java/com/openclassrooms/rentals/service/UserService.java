@@ -6,4 +6,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserService {
 	UserResponse findById(int id);
+	UserResponse getMe(String token);
 }

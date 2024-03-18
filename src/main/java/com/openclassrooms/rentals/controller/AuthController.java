@@ -4,6 +4,7 @@ import com.openclassrooms.rentals.dto.request.AuthentificationDTO;
 import com.openclassrooms.rentals.dto.request.UserRequest;
 import com.openclassrooms.rentals.dto.response.LoginResponse;
 import com.openclassrooms.rentals.dto.response.MessageResponse;
+import com.openclassrooms.rentals.dto.response.UserResponse;
 import com.openclassrooms.rentals.exception.UserCreationException;
 import com.openclassrooms.rentals.service.JwtService;
 import com.openclassrooms.rentals.service.impl.UserServiceImpl;
@@ -44,10 +45,15 @@ public class AuthController {
 //		}
 //	}
 
+	@GetMapping("/me")
+	public UserResponse getMe(@RequestHeader("Authorization") String authorizationHeader) {
+		return this.userService.getMe(authorizationHeader);
+	}
+
 	@PostMapping("/login")
 	public ResponseEntity<?> getToken(@RequestBody AuthentificationDTO authentificationDTO) {
 		try {
-			Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authentificationDTO.login(), authentificationDTO.password()));
+			Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authentificationDTO.email(), authentificationDTO.password()));
 			LoginResponse token =
 					LoginResponse.builder()
 							.token(jwtService.generateToken(authentication))

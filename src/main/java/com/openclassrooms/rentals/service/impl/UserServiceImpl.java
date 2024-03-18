@@ -5,6 +5,7 @@ import com.openclassrooms.rentals.dto.response.UserResponse;
 import com.openclassrooms.rentals.entity.UserEntity;
 import com.openclassrooms.rentals.mapper.UserMapper;
 import com.openclassrooms.rentals.repository.UserRepository;
+import com.openclassrooms.rentals.service.JwtService;
 import com.openclassrooms.rentals.service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,26 @@ public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
+	private final JwtService jwtService;
 
-	public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+	public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, JwtService jwtService) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.jwtService = jwtService;
+	}
+
+	public UserResponse getMe(String authorizationHeader) {
+		String token = extractTokenFromHeader(authorizationHeader);
+		String name = this.jwtService.getUsernameFromToken(token);
+		Optional<UserEntity> userEntity = this.userRepository.findByEmail(name);
+		return userEntity.map(UserMapper::UserEntitytoUserResponse).orElseGet(UserResponse::new);
+	}
+
+	private String extractTokenFromHeader(String authorizationHeader) {
+		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+			return authorizationHeader.substring(7); // Supprimez le préfixe "Bearer " pour obtenir le token uniquement
+		}
+		return null;
 	}
 
 	public Object createUser(UserRequest userRequest) {
