@@ -3,10 +3,12 @@ package com.openclassrooms.rentals.controller;
 import com.openclassrooms.rentals.dto.request.RentalRequest;
 import com.openclassrooms.rentals.dto.response.MessageResponse;
 import com.openclassrooms.rentals.dto.response.RentalsResponse;
+import com.openclassrooms.rentals.dto.response.UserResponse;
 import com.openclassrooms.rentals.entity.RentalEntity;
 import com.openclassrooms.rentals.service.RentalService;
+import com.openclassrooms.rentals.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,25 +17,23 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
 
 @RestController
+@AllArgsConstructor
 @Tag(name = "Locations")
 @RequestMapping(value = "/rentals", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RentalController {
 
 	private final RentalService rentalService;
-
-	@Autowired
-	public RentalController(RentalService rentalService) {
-		this.rentalService = rentalService;
-	}
+	private final UserService userService;
 
 	@GetMapping
 	public RentalsResponse findAllRentals() {
 		return this.rentalService.findAllRentals();
 	}
 
-	@PostMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<MessageResponse> createRental(@PathVariable int id, @RequestParam("picture") MultipartFile picture,@ModelAttribute RentalRequest request) {
-		return this.rentalService.createRental(id, picture, request);
+	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<MessageResponse> createRental(@RequestHeader("Authorization") String authorizationHeader, @RequestParam("picture") MultipartFile picture,@ModelAttribute RentalRequest request) {
+		UserResponse user = this.userService.getMe(authorizationHeader);
+		return this.rentalService.createRental(user.getId(), picture, request);
 	}
 
 	@GetMapping("/{id}")
@@ -42,9 +42,8 @@ public class RentalController {
 	}
 
 
-	@PutMapping("/{id}")
-	public ResponseEntity<MessageResponse> updateRental(@RequestBody RentalRequest request, @PathVariable int id) {
-			return this.rentalService.updateRental(request, id);
-
+	@PutMapping(value = "/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<MessageResponse> updateRental(@ModelAttribute RentalRequest request, @PathVariable int id) {
+		return this.rentalService.updateRental(request, id);
 	}
 }
