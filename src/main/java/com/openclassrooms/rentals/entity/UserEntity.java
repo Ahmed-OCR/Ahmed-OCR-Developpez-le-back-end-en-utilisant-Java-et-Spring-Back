@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,6 +20,9 @@ public class UserEntity {
 
 	private String name;
 	private String password;
+
+	@OneToMany(mappedBy = "owner")
+	private List<RentalEntity> rentals;
 
 	@Column(name = "created_at")
 	private Timestamp createdAt;

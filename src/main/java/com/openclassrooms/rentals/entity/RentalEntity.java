@@ -1,7 +1,9 @@
 package com.openclassrooms.rentals.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.sql.Timestamp;
@@ -24,13 +26,13 @@ public class RentalEntity {
 	private String description;
 
 	@Column(name = "owner_id")
+	@NotNull
 	private int owner_id;
 
-//	@ManyToOne
-//	@JsonIgnore
-//	@NotNull
-//	@JoinColumn(name = "owner_id", insertable = false, updatable = false)
-//	private UserEntity owner;
+	@ManyToOne
+	@JsonIgnore
+	@JoinColumn(name = "owner_id", insertable = false, updatable = false)
+	private UserEntity owner;
 
 	@Column(name = "created_at")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd", timezone = "Europe/Paris")
