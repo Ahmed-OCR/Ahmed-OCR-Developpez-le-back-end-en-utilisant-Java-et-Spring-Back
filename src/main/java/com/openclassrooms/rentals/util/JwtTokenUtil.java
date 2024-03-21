@@ -37,25 +37,15 @@ public class JwtTokenUtil {
 
 	public boolean isTokenValid(String token) throws ExpiredJwtException {
 		try {
-			Claims claims = Jwts.parserBuilder()
-					.setSigningKey(Keys.hmacShaKeyFor(jwtKey.getBytes()))
-					.build()
-					.parseClaimsJws(token)
-					.getBody();
-
+			Claims claims = getAllClaimsFromToken(token);
 			Date expirationDate = claims.getExpiration();
+
 			return expirationDate != null && !expirationDate.before(new Date());
 		} catch (ExpiredJwtException e) {
 			System.out.println(e.getMessage());
 			return false;
 		}
 	}
-//
-//	public boolean validateToken(String token) {
-//		System.out.println("VALIDATE - 2");
-//		final String username = getUsernameFromToken(token);
-//		return isTokenExpired(token);
-//	}
 
 	private JwtEncoder jwtEncoder() {
 		return new NimbusJwtEncoder(new ImmutableSecret<>(this.jwtKey.getBytes()));
@@ -77,13 +67,4 @@ public class JwtTokenUtil {
 				.parseClaimsJws(token)
 				.getBody();
 	}
-
-//	private boolean isTokenExpired(String token) {
-//		final Date expiration = getExpirationDateFromToken(token);
-//		return expiration.before(new Date());
-//	}
-//
-// 	public Date getExpirationDateFromToken(String token) {
-//		return getClaimFromToken(token, Claims::getExpiration);
-//	}
 }

@@ -8,6 +8,8 @@ import com.openclassrooms.rentals.dto.response.UserResponse;
 import com.openclassrooms.rentals.exception.UserCreationException;
 import com.openclassrooms.rentals.service.JwtService;
 import com.openclassrooms.rentals.service.impl.UserServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,22 +30,6 @@ public class AuthController {
 	private AuthenticationManager authenticationManager;
 	private final JwtService jwtService;
 	private final UserServiceImpl userService;
-
-//	@PostMapping("/login")
-//	public ResponseEntity<LoginResponse> getToken(@RequestBody UserRequest request, AuthenticationManager authenticationManager) {
-//		//401 si non authentification
-//		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-//
-//		try {
-//			LoginResponse token =
-//					LoginResponse.builder()
-//									.token(jwtService.generateToken(authentication))
-//					             	.build();
-//			return ResponseEntity.ok(token);
-//		} catch (AuthenticationException e) {
-//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//		}
-//	}
 
 	@GetMapping("/me")
 	public UserResponse getMe(@RequestHeader("Authorization") String authorizationHeader) {
@@ -68,6 +54,7 @@ public class AuthController {
 		}
 	}
 
+	@Operation(security = {@SecurityRequirement(name = "")})
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody UserRequest request) {
 		try {

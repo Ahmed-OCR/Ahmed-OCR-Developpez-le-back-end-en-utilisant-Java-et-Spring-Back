@@ -10,6 +10,7 @@ import com.openclassrooms.rentals.mapper.RentalMapper;
 import com.openclassrooms.rentals.repository.RentalRepository;
 import com.openclassrooms.rentals.service.RentalService;
 import com.openclassrooms.rentals.util.MessageUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class RentalServiceImpl implements RentalService {
 	@Override
 	public RentalsResponse findAllRentals() {
 		List<RentalEntity> rentalsEntity = this.rentalRepository.findAll();
-		List<RentalResponse> rentalsResponse = RentalMapper.toRentalResponse(rentalsEntity);  //MAPPER ICI
+		List<RentalResponse> rentalsResponse = RentalMapper.toRentalResponse(rentalsEntity);
 		return new RentalsResponse(rentalsResponse);
 	}
 
@@ -45,13 +46,11 @@ public class RentalServiceImpl implements RentalService {
 	}
 
 	@Override
-	public ResponseEntity<MessageResponse> createRental(int id, MultipartFile picture, RentalRequest request) {
+	public ResponseEntity<MessageResponse> createRental(int id, MultipartFile picture, RentalRequest request, HttpServletRequest httpServletRequest) {
 		RentalEntity rental = RentalMapper.mapToRental(id, picture, request);
 		try {
-
-			String imageUrl = saveImage(picture); // Enregistrez l'image et obtenez l'URL
+			String imageUrl = saveImage(picture, httpServletRequest);
 			rental.setPicture(imageUrl);
-			System.out.println("URL Image: " + imageUrl) ;
 			this.rentalRepository.save(rental);
 			return ResponseEntity.status(HttpStatus.CREATED).body(MessageUtil.returnMessage("Rental created !"));
 		} catch (Exception e) {
@@ -60,15 +59,17 @@ public class RentalServiceImpl implements RentalService {
 	}
 
 
-	public String saveImage(MultipartFile file) {
+	public String saveImage(MultipartFile file, HttpServletRequest httpServletRequest) {
 //		String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
 		String fileName = file.getOriginalFilename();
-		String uploadDir = "./src/main/resources/static/images/";
-		File directory = new File(uploadDir);
+		String uploadDir = "/images/";
+
+		File directory = new File("." + uploadDir); // On part de la racine, d'ou le "." dans le chemin
 		if (!directory.exists()) {
 			directory.mkdirs();
 		}
 		File uploadedFile = new File(directory, fileName);
+
 		try {
 			FileUtils.copyInputStreamToFile(file.getInputStream(), uploadedFile);
 		} catch (IOException e) {
@@ -76,8 +77,10 @@ public class RentalServiceImpl implements RentalService {
 			return null;
 		}
 
-		String imageUrl = "http://localhost:3001/images/" + fileName;
-		return imageUrl;
+		// Construction du chemin de l'image
+		return  httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName() + ":" +
+				httpServletRequest.getServerPort() + httpServletRequest.getContextPath() +
+				httpServletRequest.getServletPath() + uploadDir + fileName;
 	}
 
 	@Override

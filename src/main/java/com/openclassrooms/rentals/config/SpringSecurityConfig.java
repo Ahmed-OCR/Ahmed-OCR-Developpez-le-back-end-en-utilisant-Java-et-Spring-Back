@@ -39,7 +39,7 @@ public class SpringSecurityConfig {
 				.csrf(AbstractHttpConfigurer::disable)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests((auth) -> auth
-						.requestMatchers(postAllowedUrls, "/auth/login").permitAll() // Endpoint spécifique accessible sans authentification
+						.requestMatchers(postAllowedUrls, "/auth/login", "/rentals/images/**").permitAll() // Endpoint spécifique accessible sans authentification
 						.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui/index.html").permitAll()
 						.anyRequest().authenticated() // Tous les autres endpoints nécessitent une authentification
 				)
