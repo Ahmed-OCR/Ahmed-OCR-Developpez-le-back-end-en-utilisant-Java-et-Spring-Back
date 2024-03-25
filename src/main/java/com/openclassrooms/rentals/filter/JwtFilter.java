@@ -10,7 +10,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,11 +21,8 @@ import java.io.IOException;
 
 @Service
 public class JwtFilter extends OncePerRequestFilter {
-	@Value("${security.token.jwtKey}")
-	private String jwtKey;
 	private final CustomUserDetailsService userService;
 	private final JwtParser jwtParser;
-
 	private final JwtService jwtService;
 
 	public JwtFilter(CustomUserDetailsService userService, JwtParser jwtParser, JwtService jwtService) {
@@ -59,7 +55,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
 	private void handleJwtException(JwtException e, HttpServletResponse response) throws IOException {
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		response.getWriter().write("JWT token est invalide ou expire");
 	}
 
 	private String extractTokenFromHeader(HttpServletRequest request) {
@@ -72,7 +67,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
 	private Claims validateToken(String token) throws JwtException {
 		if (!isTokenValid(token)) {
-			throw new JwtException("JWT Token est invalide ou expire");
+			throw new JwtException("JWT Token est invalide ou expire 2");
 		}
 		return jwtParser.parseClaimsJws(token).getBody();
 	}
