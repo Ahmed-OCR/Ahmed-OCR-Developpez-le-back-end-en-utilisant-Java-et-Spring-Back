@@ -2,7 +2,7 @@ package com.openclassrooms.rentals.config;
 
 
 import com.openclassrooms.rentals.filter.JwtFilter;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -16,22 +16,28 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
 @Configuration
+@AllArgsConstructor
 @EnableWebSecurity
 @PropertySource("classpath:security.properties")
 public class SpringSecurityConfig {
+	private static final String[] URL_WHITELIST_SWAGGER = {
+			"/swagger-ui/**",
+			"/v3/api-docs/**",
+			"/swagger-ui/index.html",
+	};
 
-	@Value("${security.post.allowed.urls}")
-	private String postAllowedUrls;
+	private static final String[] URL_WHITELIST_AUTH = {
+			"/auth/register",
+			"/auth/login",
+	};
+
+	private static final String[] URL_WHITELIST_CUSTOM = {
+			"/rentals/images/**",
+	};
 
 	private final CustomUserDetailsService customUserDetailsService;
 	private final JwtFilter jwtFilter;
-
-	public SpringSecurityConfig(CustomUserDetailsService customUserDetailsService, JwtFilter jwtFilter) {
-		this.customUserDetailsService = customUserDetailsService;
-		this.jwtFilter = jwtFilter;
-	}
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -39,9 +45,10 @@ public class SpringSecurityConfig {
 				.csrf(AbstractHttpConfigurer::disable)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests((auth) -> auth
-						.requestMatchers(postAllowedUrls, "/auth/login", "/rentals/images/**").permitAll() // Endpoint spécifique accessible sans authentification
-						.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui/index.html").permitAll()
-						.anyRequest().authenticated() // Tous les autres endpoints nécessitent une authentification
+						.requestMatchers(URL_WHITELIST_AUTH).permitAll()
+						.requestMatchers(URL_WHITELIST_CUSTOM).permitAll()
+						.requestMatchers(URL_WHITELIST_SWAGGER).permitAll()
+						.anyRequest().authenticated()
 				)
 				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();

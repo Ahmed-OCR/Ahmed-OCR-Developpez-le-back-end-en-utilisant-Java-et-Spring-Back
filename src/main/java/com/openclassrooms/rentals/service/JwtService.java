@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class JwtService {
 
-//	private UserServiceImpl userService;
-
 	private JwtTokenUtil jwtTokenUtil;
 
 	public String generateToken(Authentication authentication) {
