@@ -7,12 +7,15 @@ import com.openclassrooms.rentals.dto.response.UserResponse;
 import com.openclassrooms.rentals.entity.RentalEntity;
 import com.openclassrooms.rentals.service.RentalService;
 import com.openclassrooms.rentals.service.UserService;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +30,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @Tag(name = "Locations")
 @RequestMapping(value = "/rentals", produces = MediaType.APPLICATION_JSON_VALUE)
+@SecurityRequirement(name = "Bearer Authentication")
 public class RentalController {
 
 	private final RentalService rentalService;
@@ -54,34 +58,29 @@ public class RentalController {
 	}
 
 	@GetMapping("/images/{image}")
+	@Hidden
 	public ResponseEntity<Resource> getImage(@PathVariable String image) {
 		Path imagePath = Paths.get("/images/").resolve(image);
-		System.out.println("Path:" + imagePath);
 		Resource resource;
 		try {
 			resource = new UrlResource(imagePath.toUri());
+
+			// Vérifie si la ressource existe et est lisible
+			if (!resource.exists() || !resource.isReadable()) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+			}
+
+			// Set le content type par exemple avec image/jpeg
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.IMAGE_JPEG);
+
+			return ResponseEntity.ok()
+					.headers(headers)
+					.body(resource);
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-
-		// Vérifie si la ressource existe et est lisible
-		if (!resource.exists() || !resource.isReadable()) {
-			return ResponseEntity.notFound().build();
-		}
-
-		// Si on arrive la, c'est que ressource existe
-		// Détermine le type MIME à partir de l'extension de fichier
-		//String contentType = MimeTypeUtils.parseMimeType(resource.getFilename()).toString();
-
-		// Set le content type par exemple avec image/jpeg
-		HttpHeaders headers = new HttpHeaders();
-		//Exemple : headers.setContentType(MediaType.IMAGE_JPEG);
-		headers.setContentType(MediaType.IMAGE_JPEG);
-		//headers.setContentType(MediaType.parseMediaType(contentType));
-
-		return ResponseEntity.ok()
-				.headers(headers)
-				.body(resource);
 	}
 }

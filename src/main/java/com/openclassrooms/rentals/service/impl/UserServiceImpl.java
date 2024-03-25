@@ -35,44 +35,45 @@ public class UserServiceImpl implements UserService {
 
 	private String extractTokenFromHeader(String authorizationHeader) {
 		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-			return authorizationHeader.substring(7); // Supprimez le préfixe "Bearer " pour obtenir le token uniquement
+			return authorizationHeader.substring(7); // Supprime le préfixe "Bearer " pour obtenir le token uniquement
 		}
 		return null;
 	}
 
 	public Object createUser(UserRequest userRequest) {
-//		validateUserRequest(userRequest);
+		try {
+			validateUserRequest(userRequest);
 
-		UserEntity user = new UserEntity();
-		user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-		user.setName(userRequest.getName());
-		user.setEmail(userRequest.getEmail());
+			UserEntity user = new UserEntity();
+			user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+			user.setName(userRequest.getName());
+			user.setEmail(userRequest.getEmail());
 
-		return this.userRepository.save(user);
+			return this.userRepository.save(user);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e.getMessage());
+		}
 	}
 
-//	private void validateUserRequest(UserRequest userRequest) {
-//		if (userRequest.getEmail() == null || userRequest.getEmail().isEmpty()) {
-//			throw new UserCreationException("L'email ne peut pas être vide");
-//		}
-//		if (userRepository.findByEmail(userRequest.getEmail()).isPresent()) {
-//			throw new UserCreationException("Un utilisateur existe déjà avec cet email ");
-//		}
-//		if (userRequest.getPassword() == null || userRequest.getPassword().isEmpty()) {
-//			throw new UserCreationException("Le mot de passe ne peut pas être vide");
-//		}
-//	}
+	private void validateUserRequest(UserRequest userRequest) {
 
+		if (
+			userRequest.getEmail() == null || userRequest.getEmail().isEmpty() ||			//Le mail est requis.
+			userRequest.getName() == null || userRequest.getName().isEmpty() || 			//Le nom est requis.
+			userRequest.getPassword() == null || userRequest.getPassword().isEmpty() ||		//Le mot de passe est requis.
+			userRepository.findByEmail(userRequest.getEmail()).isPresent()					//Un utilisateur avec cet e-mail existe déjà.
+		) {
+			throw new IllegalArgumentException();
+		}
+	}
 
 	@Override
 	public UserResponse findById(int id) {
-//		return UserMapper.UserEntitytoUserResponse(this.userRepository.findById(id));
 		Optional<UserEntity> userOptional = this.userRepository.findById(id);
 		if (userOptional.isPresent()) {
 			return UserMapper.UserEntitytoUserResponse(userOptional.get());
 		} else {
 			return new UserResponse();
-//			throw new UserNotFoundException("Utilisateur introuvable avec l'ID : " + id);
 		}
 	}
 }

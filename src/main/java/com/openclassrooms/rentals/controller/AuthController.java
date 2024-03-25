@@ -32,6 +32,7 @@ public class AuthController {
 	private final UserServiceImpl userService;
 
 	@GetMapping("/me")
+	@SecurityRequirement(name = "Bearer Authentication")
 	public UserResponse getMe(@RequestHeader("Authorization") String authorizationHeader) {
 		return this.userService.getMe(authorizationHeader);
 	}
@@ -54,7 +55,7 @@ public class AuthController {
 		}
 	}
 
-	@Operation(security = {@SecurityRequirement(name = "")})
+
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody UserRequest request) {
 		try {
