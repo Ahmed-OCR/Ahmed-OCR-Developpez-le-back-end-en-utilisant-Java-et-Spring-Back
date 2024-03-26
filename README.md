@@ -1,6 +1,8 @@
 # Portail de mise en relation
 
 ## Description
+Portail de mise en relation entre les futurs locataires et les propriétaires pour de la location saisonnière sur la côte basque dans un premier temps et, plus tard, sur toute la France via un front dédié.
+
 Cette application est une API RESTful construite avec Spring Boot 3. \
 Elle utilise Spring Security pour l’authentification et l’autorisation, et Swagger pour la documentation de l’API à l’aide d’OpenAPI 3.
 
