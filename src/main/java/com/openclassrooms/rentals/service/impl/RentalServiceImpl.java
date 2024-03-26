@@ -13,6 +13,7 @@ import com.openclassrooms.rentals.util.MessageUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -58,7 +59,7 @@ public class RentalServiceImpl implements RentalService {
 			this.rentalRepository.save(rental);
 			return ResponseEntity.status(HttpStatus.CREATED).body(MessageUtil.returnMessage("Rental created !"));
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(MessageUtil.returnMessage("An error occurred while creating the rental."));
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 		}
 	}
 
@@ -70,14 +71,12 @@ public class RentalServiceImpl implements RentalService {
 		Optional<RentalEntity> optionalRental = rentalRepository.findById(id);
 		if (optionalRental.isPresent()) {
 			RentalEntity existingRental = optionalRental.get();
-			existingRental.setName(request.getName());
-			existingRental.setSurface(request.getSurface());
-			existingRental.setPrice(request.getPrice());
-			existingRental.setDescription(request.getDescription());
+			// Copie toutes les propriétés de la location vers la location existante
+			BeanUtils.copyProperties(request, existingRental, "id");
 			this.rentalRepository.save(existingRental);
 			return ResponseEntity.status(HttpStatus.CREATED).body(MessageUtil.returnMessage("Rental updated !"));
 		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(MessageUtil.returnMessage("An error occurred while updating the rental."));
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 		}
 	}
 
