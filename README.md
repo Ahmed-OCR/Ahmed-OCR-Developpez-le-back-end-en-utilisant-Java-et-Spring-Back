@@ -22,7 +22,8 @@ Clonez ce dépôt : git clone https://github.com/Ahmed-OCR/back
 
 ## Utilisation
 Accédez au répertoire du projet : cd back \
-Exécutez l’application : `mvn spring-boot:run`
+Construction du projet : `mvn clean install` \
+Exécutez l’application : `mvn spring-boot:run` ou via votre IDE.
 
 ## Configuration
 Le fichier application.properties contient les propriétés de configuration de l’application (ex: Context path, DbPort, serverPort etc...) \
