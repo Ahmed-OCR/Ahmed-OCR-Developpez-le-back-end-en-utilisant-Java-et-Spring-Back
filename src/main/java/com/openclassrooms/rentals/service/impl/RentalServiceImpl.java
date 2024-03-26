@@ -47,6 +47,10 @@ public class RentalServiceImpl implements RentalService {
 
 	@Override
 	public ResponseEntity<MessageResponse> createRental(int id, MultipartFile picture, RentalRequest request, HttpServletRequest httpServletRequest) {
+		if (!this.validateRentaRequest(request, true)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+		}
+
 		RentalEntity rental = RentalMapper.mapToRental(id, picture, request);
 		try {
 			String imageUrl = saveImage(picture, httpServletRequest);
@@ -58,6 +62,36 @@ public class RentalServiceImpl implements RentalService {
 		}
 	}
 
+	@Override
+	public ResponseEntity<MessageResponse> updateRental(RentalRequest request, int id) {
+		if (!this.validateRentaRequest(request, false)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+		}
+		Optional<RentalEntity> optionalRental = rentalRepository.findById(id);
+		if (optionalRental.isPresent()) {
+			RentalEntity existingRental = optionalRental.get();
+			existingRental.setName(request.getName());
+			existingRental.setSurface(request.getSurface());
+			existingRental.setPrice(request.getPrice());
+			existingRental.setDescription(request.getDescription());
+			this.rentalRepository.save(existingRental);
+			return ResponseEntity.status(HttpStatus.CREATED).body(MessageUtil.returnMessage("Rental updated !"));
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(MessageUtil.returnMessage("An error occurred while updating the rental."));
+		}
+	}
+
+	public boolean validateRentaRequest(RentalRequest rentalRequest, boolean validatePicture) {
+		if (rentalRequest == null
+				|| rentalRequest.getName() == null || rentalRequest.getName().isEmpty()
+				|| rentalRequest.getSurface() <= 0
+				|| rentalRequest.getPrice() <= 0
+				|| (validatePicture && (rentalRequest.getPicture() == null || rentalRequest.getPicture().isEmpty()))
+				|| rentalRequest.getDescription() == null || rentalRequest.getDescription().isEmpty()) {
+			return false;
+		}
+		return true;
+	}
 
 	public String saveImage(MultipartFile file, HttpServletRequest httpServletRequest) {
 //		String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
@@ -81,22 +115,6 @@ public class RentalServiceImpl implements RentalService {
 		return  httpServletRequest.getScheme() + "://" + httpServletRequest.getServerName() + ":" +
 				httpServletRequest.getServerPort() + httpServletRequest.getContextPath() +
 				httpServletRequest.getServletPath() + uploadDir + fileName;
-	}
-
-	@Override
-	public ResponseEntity<MessageResponse> updateRental(RentalRequest request, int id) {
-		Optional<RentalEntity> optionalRental = rentalRepository.findById(id);
-		if (optionalRental.isPresent()) {
-			RentalEntity existingRental = optionalRental.get();
-			existingRental.setName(request.getName());
-			existingRental.setSurface(request.getSurface());
-			existingRental.setPrice(request.getPrice());
-			existingRental.setDescription(request.getDescription());
-			this.rentalRepository.save(existingRental);
-			return ResponseEntity.status(HttpStatus.CREATED).body(MessageUtil.returnMessage("Rental updated !"));
-		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(MessageUtil.returnMessage("An error occurred while updating the rental."));
-		}
 	}
 }
 
