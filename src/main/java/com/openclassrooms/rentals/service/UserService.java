@@ -1,10 +1,10 @@
 package com.openclassrooms.rentals.service;
 
+import com.openclassrooms.rentals.dto.request.UserRequest;
 import com.openclassrooms.rentals.dto.response.UserResponse;
-import org.springframework.stereotype.Service;
 
-@Service
 public interface UserService {
 	UserResponse findById(int id);
 	UserResponse getMe(String token);
+	void createUser(UserRequest userRequest);
 }

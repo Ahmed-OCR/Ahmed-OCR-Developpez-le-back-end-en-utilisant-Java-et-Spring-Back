@@ -5,10 +5,8 @@ import com.openclassrooms.rentals.dto.request.UserRequest;
 import com.openclassrooms.rentals.dto.response.LoginResponse;
 import com.openclassrooms.rentals.dto.response.MessageResponse;
 import com.openclassrooms.rentals.dto.response.UserResponse;
-import com.openclassrooms.rentals.exception.UserCreationException;
 import com.openclassrooms.rentals.service.JwtService;
-import com.openclassrooms.rentals.service.impl.UserServiceImpl;
-import io.swagger.v3.oas.annotations.Operation;
+import com.openclassrooms.rentals.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -29,7 +27,7 @@ import java.util.Collections;
 public class AuthController {
 	private AuthenticationManager authenticationManager;
 	private final JwtService jwtService;
-	private final UserServiceImpl userService;
+	private final UserService userService;
 
 	@GetMapping("/me")
 	@SecurityRequirement(name = "Bearer Authentication")
@@ -71,9 +69,9 @@ public class AuthController {
 
 	}
 
-	@ExceptionHandler(UserCreationException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public String handleUserCreationException(UserCreationException ex) {
-		return ex.getMessage();
-	}
+//	@ExceptionHandler(UserCreationException.class)
+//	@ResponseStatus(HttpStatus.BAD_REQUEST)
+//	public String handleUserCreationException(UserCreationException ex) {
+//		return ex.getMessage();
+//	}
 }

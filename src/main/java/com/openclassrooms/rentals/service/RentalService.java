@@ -6,12 +6,10 @@ import com.openclassrooms.rentals.dto.response.RentalsResponse;
 import com.openclassrooms.rentals.entity.RentalEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
-@Service
 public interface RentalService {
 
 	RentalsResponse findAllRentals();

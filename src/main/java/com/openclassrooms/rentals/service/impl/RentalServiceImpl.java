@@ -97,7 +97,7 @@ public class RentalServiceImpl implements RentalService {
 		String fileName = file.getOriginalFilename();
 		String uploadDir = "/images/";
 
-		File directory = new File("." + uploadDir); // On part de la racine, d'ou le "." dans le chemin
+		File directory = new File("." + uploadDir); // On part du repertoire courant, d'ou le "." dans le chemin
 		if (!directory.exists()) {
 			directory.mkdirs();
 		}

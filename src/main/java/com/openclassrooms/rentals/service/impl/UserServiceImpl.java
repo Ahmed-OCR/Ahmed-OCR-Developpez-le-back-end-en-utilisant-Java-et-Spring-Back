@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserService {
 		this.jwtService = jwtService;
 	}
 
+	@Override
 	public UserResponse getMe(String authorizationHeader) {
 		String token = extractTokenFromHeader(authorizationHeader);
 		String name = this.jwtService.getUsernameFromToken(token);
@@ -33,14 +34,8 @@ public class UserServiceImpl implements UserService {
 		return userEntity.map(UserMapper::UserEntitytoUserResponse).orElseGet(UserResponse::new);
 	}
 
-	private String extractTokenFromHeader(String authorizationHeader) {
-		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-			return authorizationHeader.substring(7); // Supprime le préfixe "Bearer " pour obtenir le token uniquement
-		}
-		return null;
-	}
-
-	public Object createUser(UserRequest userRequest) {
+	@Override
+	public void createUser(UserRequest userRequest) {
 		try {
 			validateUserRequest(userRequest);
 
@@ -49,10 +44,27 @@ public class UserServiceImpl implements UserService {
 			user.setName(userRequest.getName());
 			user.setEmail(userRequest.getEmail());
 
-			return this.userRepository.save(user);
+			this.userRepository.save(user);
 		} catch (IllegalArgumentException e) {
 			throw new RuntimeException(e.getMessage());
 		}
+	}
+
+	@Override
+	public UserResponse findById(int id) {
+		Optional<UserEntity> userOptional = this.userRepository.findById(id);
+		if (userOptional.isPresent()) {
+			return UserMapper.UserEntitytoUserResponse(userOptional.get());
+		} else {
+			return new UserResponse();
+		}
+	}
+
+	private String extractTokenFromHeader(String authorizationHeader) {
+		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+			return authorizationHeader.substring(7); // Supprime le préfixe "Bearer " pour obtenir le token uniquement
+		}
+		return null;
 	}
 
 	private void validateUserRequest(UserRequest userRequest) {
@@ -67,13 +79,5 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
-	@Override
-	public UserResponse findById(int id) {
-		Optional<UserEntity> userOptional = this.userRepository.findById(id);
-		if (userOptional.isPresent()) {
-			return UserMapper.UserEntitytoUserResponse(userOptional.get());
-		} else {
-			return new UserResponse();
-		}
-	}
+
 }

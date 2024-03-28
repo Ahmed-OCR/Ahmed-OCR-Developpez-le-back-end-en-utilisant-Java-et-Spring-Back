@@ -1,4 +1,4 @@
-package com.openclassrooms.rentals.parser;
+package com.openclassrooms.rentals.config;
 
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
