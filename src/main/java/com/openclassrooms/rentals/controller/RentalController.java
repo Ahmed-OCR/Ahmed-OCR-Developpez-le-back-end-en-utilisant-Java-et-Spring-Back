@@ -60,7 +60,7 @@ public class RentalController {
 	@GetMapping("/images/{image}")
 	@Hidden
 	public ResponseEntity<Resource> getImage(@PathVariable String image) {
-		Path imagePath = Paths.get("/images/").resolve(image);
+		Path imagePath = Paths.get("./images/").resolve(image);
 		Resource resource;
 		try {
 			resource = new UrlResource(imagePath.toUri());
