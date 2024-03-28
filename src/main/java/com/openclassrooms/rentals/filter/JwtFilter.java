@@ -1,6 +1,6 @@
 package com.openclassrooms.rentals.filter;
 
-import com.openclassrooms.rentals.config.CustomUserDetailsService;
+import com.openclassrooms.rentals.service.impl.CustomUserDetailsService;
 import com.openclassrooms.rentals.exception.JwtException;
 import com.openclassrooms.rentals.service.JwtService;
 import io.jsonwebtoken.Claims;

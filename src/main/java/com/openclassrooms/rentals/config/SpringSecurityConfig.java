@@ -2,6 +2,7 @@ package com.openclassrooms.rentals.config;
 
 
 import com.openclassrooms.rentals.filter.JwtFilter;
+import com.openclassrooms.rentals.service.impl.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

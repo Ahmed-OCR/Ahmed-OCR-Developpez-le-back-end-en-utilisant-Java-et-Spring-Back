@@ -1,9 +1,8 @@
-package com.openclassrooms.rentals.config;
+package com.openclassrooms.rentals.service.impl;
 
 import com.openclassrooms.rentals.entity.UserEntity;
 import com.openclassrooms.rentals.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
