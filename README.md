@@ -48,7 +48,7 @@ L’authentification se fait via JWT (JSON Web Tokens).
 
 ## Base de données
 - Création d'une base de données type MySql
-- Une fois dans la base de données, executer le script qui se trouvre dans `src/main/resources/script.sql`
+- Une fois dans la base de données, executer le script qui se trouve dans `src/main/resources/script.sql`
 - Créer un nouvel utilisateur :
   - user: *sqlUser*
   - password: *sqlPwd* 
