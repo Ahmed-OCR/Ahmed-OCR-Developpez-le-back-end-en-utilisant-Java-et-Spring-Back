@@ -13,7 +13,7 @@ Elle utilise Spring Security pour l’authentification et l’autorisation, Jpa 
 4. [Configuration](#configuration)
 5. [Endpoints](#endpoints)
 6. [Authentification](#authentification)
-7. [Tables de la base de données](#tables-de-la-base-de-données)
+7. [Tables de la base de données](#base-de-données)
 8. [Documentation de l’API](#documentation-de-lapi)
 
 ## Prérequis
@@ -46,17 +46,12 @@ Vous pouvez personnaliser les paramètres de sécurité dans la classe SecurityC
 ## Authentification
 L’authentification se fait via JWT (JSON Web Tokens).
 
-## Tables de la base de données
-- Liste des tables
-  - `users` : Stocke les informations sur les utilisateurs (nom, e-mail, etc.).
-  - `rentals` : Contient les détails des locations.
-  - `messages` : Enregistre les messages liés aux locations
-  
-- Relations:
-  - Il n'est pas possible d'ajouter une location si le user n'existe pas
-  - Il n'est pas possible d'ajouter un message si une location et/ou un user n'existe(nt) pas
-
-![Bdd](/bdd.png "Base de données")
+## Base de données
+- Création d'une base de données type MySql
+- Une fois dans la base de données, executer le script qui se trouvre dans `src/main/resources/script.sql`
+- Créer un nouvel utilisateur :
+  - user: *sqlUser*
+  - password: *sqlPwd* 
 
 ## Documentation de l’API
 Accédez à la documentation de l’API via Swagger UI : `/api/swagger-ui/index.html`
