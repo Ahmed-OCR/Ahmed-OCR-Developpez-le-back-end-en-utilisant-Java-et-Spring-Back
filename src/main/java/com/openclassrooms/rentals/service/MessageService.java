@@ -1,9 +1,9 @@
 package com.openclassrooms.rentals.service;
 
 import com.openclassrooms.rentals.dto.request.MessageRequest;
-import org.springframework.http.ResponseEntity;
+import com.openclassrooms.rentals.dto.response.MessageResponse;
 
 public interface MessageService {
 
-	ResponseEntity<?> createMessage(MessageRequest request);
+	MessageResponse createMessage(MessageRequest request);
 }
