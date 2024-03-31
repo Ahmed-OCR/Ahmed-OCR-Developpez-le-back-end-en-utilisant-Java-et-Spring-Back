@@ -5,7 +5,9 @@ import com.openclassrooms.rentals.dto.response.MessageResponse;
 import com.openclassrooms.rentals.dto.response.RentalResponse;
 import com.openclassrooms.rentals.dto.response.RentalsResponse;
 import com.openclassrooms.rentals.entity.RentalEntity;
-import com.openclassrooms.rentals.exception.RentalNotFoundException;
+import com.openclassrooms.rentals.exception.rentals.RentalCreationException;
+import com.openclassrooms.rentals.exception.rentals.RentalNotFoundException;
+import com.openclassrooms.rentals.exception.rentals.RentalUpdateException;
 import com.openclassrooms.rentals.mapper.RentalMapper;
 import com.openclassrooms.rentals.repository.RentalRepository;
 import com.openclassrooms.rentals.service.RentalService;
@@ -14,8 +16,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,42 +31,52 @@ public class RentalServiceImpl implements RentalService {
 	private final RentalRepository rentalRepository;
 
 	@Override
-	public RentalsResponse findAllRentals() {
-		List<RentalEntity> rentalsEntity = this.rentalRepository.findAll();
-		List<RentalResponse> rentalsResponse = RentalMapper.toRentalResponse(rentalsEntity);
-		return new RentalsResponse(rentalsResponse);
-	}
-
-	@Override
-	public Optional<RentalEntity> findById(int id) {
-		Optional<RentalEntity> rental = this.rentalRepository.findById(id);
-		if (rental.isEmpty()) {
-			throw new RentalNotFoundException("Location introuvable avec l'ID : " + id);
+	public RentalsResponse findAllRentals() throws RentalNotFoundException{
+		try {
+			List<RentalEntity> rentalsEntity = this.rentalRepository.findAll();
+			List<RentalResponse> rentalsResponse = RentalMapper.toRentalResponse(rentalsEntity);
+			return new RentalsResponse(rentalsResponse);
 		}
-		return rental;
+		catch (RentalNotFoundException e) {
+			throw new RentalNotFoundException();
+		}
 	}
 
 	@Override
-	public ResponseEntity<MessageResponse> createRental(int id, MultipartFile picture, RentalRequest request, HttpServletRequest httpServletRequest) {
+	public RentalResponse findRentalById(int id) throws RentalNotFoundException {
+		try {
+			Optional<RentalEntity> rental = this.rentalRepository.findById(id);
+			if (rental.isEmpty()) {
+				throw new RentalNotFoundException();
+			}
+			return RentalMapper.toRentalResponseSetter(rental.get()); // .get() Récupére l'entité à l'intérieur de l'Optional
+		}
+		catch (RentalNotFoundException e) {
+			throw new RentalNotFoundException();
+		}
+	}
+
+	@Override
+	public MessageResponse createRental(int id, MultipartFile picture, RentalRequest request, HttpServletRequest httpServletRequest) throws RentalCreationException {
 		if (!this.validateRentaRequest(request, true)) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+			throw new RentalCreationException();
 		}
 
-		RentalEntity rental = RentalMapper.mapToRental(id, picture, request);
+		RentalEntity rental = RentalMapper.mapToRental(id, request);
 		try {
 			String imageUrl = saveImage(picture, httpServletRequest);
 			rental.setPicture(imageUrl);
 			this.rentalRepository.save(rental);
-			return ResponseEntity.status(HttpStatus.CREATED).body(MessageUtil.returnMessage("Rental created !"));
+			return MessageUtil.returnMessage("Rental created !");
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+			throw new RentalCreationException();
 		}
 	}
 
 	@Override
-	public ResponseEntity<MessageResponse> updateRental(RentalRequest request, int id) {
+	public MessageResponse updateRental(RentalRequest request, int id) throws RentalUpdateException {
 		if (!this.validateRentaRequest(request, false)) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+			throw new RentalUpdateException();
 		}
 		Optional<RentalEntity> optionalRental = rentalRepository.findById(id);
 		if (optionalRental.isPresent()) {
@@ -74,9 +84,9 @@ public class RentalServiceImpl implements RentalService {
 			// Copie toutes les propriétés de la location vers la location existante
 			BeanUtils.copyProperties(request, existingRental, "id");
 			this.rentalRepository.save(existingRental);
-			return ResponseEntity.status(HttpStatus.CREATED).body(MessageUtil.returnMessage("Rental updated !"));
+			return MessageUtil.returnMessage("Rental updated !");
 		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+			throw new RentalUpdateException();
 		}
 	}
 

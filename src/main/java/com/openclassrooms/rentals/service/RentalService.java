@@ -2,21 +2,18 @@ package com.openclassrooms.rentals.service;
 
 import com.openclassrooms.rentals.dto.request.RentalRequest;
 import com.openclassrooms.rentals.dto.response.MessageResponse;
+import com.openclassrooms.rentals.dto.response.RentalResponse;
 import com.openclassrooms.rentals.dto.response.RentalsResponse;
-import com.openclassrooms.rentals.entity.RentalEntity;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Optional;
 
 public interface RentalService {
 
 	RentalsResponse findAllRentals();
 
-	Optional<RentalEntity> findById(int id);
+	RentalResponse findRentalById(int id);
 
-	ResponseEntity<MessageResponse> createRental(int id,MultipartFile picture,RentalRequest request, HttpServletRequest httpServletRequest) ;
+	MessageResponse createRental(int id,MultipartFile picture,RentalRequest request, HttpServletRequest httpServletRequest) ;
 
-	ResponseEntity<MessageResponse> updateRental(RentalRequest request, int id);
+	MessageResponse updateRental(RentalRequest request, int id);
 }

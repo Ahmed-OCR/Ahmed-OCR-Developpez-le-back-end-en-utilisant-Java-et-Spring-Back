@@ -2,9 +2,12 @@ package com.openclassrooms.rentals.controller;
 
 import com.openclassrooms.rentals.dto.request.RentalRequest;
 import com.openclassrooms.rentals.dto.response.MessageResponse;
+import com.openclassrooms.rentals.dto.response.RentalResponse;
 import com.openclassrooms.rentals.dto.response.RentalsResponse;
 import com.openclassrooms.rentals.dto.response.UserResponse;
-import com.openclassrooms.rentals.entity.RentalEntity;
+import com.openclassrooms.rentals.exception.rentals.RentalCreationException;
+import com.openclassrooms.rentals.exception.rentals.RentalNotFoundException;
+import com.openclassrooms.rentals.exception.rentals.RentalUpdateException;
 import com.openclassrooms.rentals.service.RentalService;
 import com.openclassrooms.rentals.service.UserService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -24,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -36,25 +38,47 @@ public class RentalController {
 	private final RentalService rentalService;
 	private final UserService userService;
 
-	@GetMapping
-	public RentalsResponse findAllRentals() {
-		return this.rentalService.findAllRentals();
-	}
-
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<MessageResponse> createRental(@RequestHeader("Authorization") String authorizationHeader, @RequestParam("picture") MultipartFile picture,@ModelAttribute RentalRequest request, HttpServletRequest httpServletRequest) {
-		UserResponse user = this.userService.getMe(authorizationHeader);
-		return this.rentalService.createRental(user.getId(), picture, request, httpServletRequest);
-	}
-
-	@GetMapping("/{id}")
-	public Optional<RentalEntity> findAllRentals(@PathVariable int id) {
-		return this.rentalService.findById(id);
+		try {
+			UserResponse user = this.userService.getMe(authorizationHeader);
+			MessageResponse messageResponse = this.rentalService.createRental(user.getId(), picture, request, httpServletRequest);
+			return ResponseEntity.status(HttpStatus.CREATED).body(messageResponse);
+		}
+		catch (RentalCreationException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+		}
 	}
 
 	@PutMapping(value = "/{id}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<MessageResponse> updateRental(@ModelAttribute RentalRequest request, @PathVariable int id) {
-		return this.rentalService.updateRental(request, id);
+		try {
+			MessageResponse messageResponse = this.rentalService.updateRental(request, id);
+			return ResponseEntity.status(HttpStatus.CREATED).body(messageResponse);
+		}
+		catch (RentalUpdateException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+		}
+	}
+
+	@GetMapping("/{id}")
+	public RentalResponse findRentalById(@PathVariable int id) {
+		try {
+			return this.rentalService.findRentalById(id);
+		}
+		catch (RentalNotFoundException e){
+			throw new RentalNotFoundException();
+		}
+	}
+
+	@GetMapping
+	public RentalsResponse findAllRentals() {
+		try {
+			return this.rentalService.findAllRentals();
+		}
+		catch (RentalNotFoundException e){
+			throw new RentalNotFoundException();
+		}
 	}
 
 	@GetMapping("/images/{image}")

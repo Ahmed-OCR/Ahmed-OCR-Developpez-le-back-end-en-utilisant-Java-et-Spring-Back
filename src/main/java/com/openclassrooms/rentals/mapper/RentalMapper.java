@@ -4,7 +4,6 @@ import com.openclassrooms.rentals.dto.request.RentalRequest;
 import com.openclassrooms.rentals.dto.response.RentalResponse;
 import com.openclassrooms.rentals.entity.RentalEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
 @Component
 public class RentalMapper {
 
-	public static RentalEntity mapToRental(int id, MultipartFile picture,RentalRequest rentalRequest) {
+	public static RentalEntity mapToRental(int id, RentalRequest rentalRequest) {
 		RentalEntity rental = new RentalEntity();
 		rental.setName(rentalRequest.getName());
 		rental.setSurface(rentalRequest.getSurface());
@@ -30,7 +29,7 @@ public class RentalMapper {
 		return rentalResponses;
 	}
 
-	private static RentalResponse toRentalResponseSetter(RentalEntity rentals) {
+	public static RentalResponse toRentalResponseSetter(RentalEntity rentals) {
 		RentalResponse rentalResponse = new RentalResponse();
 		rentalResponse.setId(rentals.getId());
 		rentalResponse.setName(rentals.getName());
