@@ -19,7 +19,7 @@ import java.util.function.Function;
 @Component
 public class JwtTokenUtil {
 
-	@Value("${security.token.jwtKey}")
+	@Value("${SECURITY_TOKEN_JWT}")
 	private String jwtKey;
 
 	public String generateToken(Authentication authentication) {

@@ -12,7 +12,7 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 public class JwtParserConfig {
 
-	@Value("${security.token.jwtKey}")
+	@Value("${SECURITY_TOKEN_JWT}")
 	private String jwtKey;
 
 	@Bean

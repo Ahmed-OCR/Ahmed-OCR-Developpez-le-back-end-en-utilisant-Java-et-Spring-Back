@@ -6,9 +6,8 @@ import com.openclassrooms.rentals.service.impl.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,7 +21,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @AllArgsConstructor
 @EnableWebSecurity
-@PropertySource("classpath:security.properties")
 public class SpringSecurityConfig {
 	private static final String[] URL_WHITELIST_SWAGGER = {
 			"/swagger-ui/**",
@@ -72,7 +70,7 @@ public class SpringSecurityConfig {
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 		PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
-		configurer.setLocation(new ClassPathResource(".env"));
+		configurer.setLocation(new FileSystemResource(".env"));
 		return configurer;
 	}
 
