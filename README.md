@@ -21,6 +21,7 @@ Java 17 ou version supérieure
 
 ## Installation
 Clonez ce dépôt : git clone https://github.com/Ahmed-OCR/back
+Mettez vos identifiants de base de données dans le fichier .env
 
 ## Utilisation
 Accédez au répertoire du projet : cd back \
