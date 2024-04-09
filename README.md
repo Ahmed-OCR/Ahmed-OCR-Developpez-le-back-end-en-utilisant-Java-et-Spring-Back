@@ -20,7 +20,7 @@ Elle utilise Spring Security pour l’authentification et l’autorisation, Jpa 
 Java 17 ou version supérieure
 
 ## Installation
-Clonez ce dépôt : git clone https://github.com/Ahmed-OCR/back
+Clonez ce dépôt : git clone https://github.com/Ahmed-OCR/back \
 Mettez vos identifiants de base de données dans le fichier .env
 
 ## Utilisation
